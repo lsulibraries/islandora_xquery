@@ -62,6 +62,25 @@ function islandora_xquery_admin_form($form, &$form_state) {
       array('zorba'),
     ),
   );
+  $regenerate = isset($form_state['values']['regenerate_dc']) ? $form_state['values']['regenerate_dc'] : variable_get('islandora_xquery_regenerate_dc', 0);
+  $form['configure_regeneration'] = array(
+    '#type' => 'fieldset',
+    '#tree' => TRUE,
+    '#title' => t('DC Regeneration'),
+    '#collapsed' => FALSE,
+    '#collapsible' => FALSE,
+  );
+  $form['configure_regeneration']['regenerate_dc'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Regenerate DC'),
+    '#default_value' => $regenerate,
+  );
+  $form['configure_regeneration']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#submit' => array('islandora_xquery_admin_form_configure_regeneration_submit'),
+    '#limit_validation_errors' => array(array('configure_regeneration')),
+  );
   $form['table'] = array(
     '#theme' => 'table',
     '#header' => array(
@@ -145,6 +164,18 @@ function islandora_xquery_admin_form_submit($form, &$form_state) {
  */
 function islandora_xquery_admin_form_zorba_configure_submit($form, &$form_state) {
   variable_set('islandora_xquery_zorba', $form_state['values']['zorba']);
+}
+
+/**
+ * Submit handler for the regenerate DC form.
+ *
+ * @param array $form
+ *   An array representing a Drupal form.
+ * @param array $form_state
+ *   An array representing the Drupal form state.
+ */
+function islandora_xquery_admin_form_configure_regeneration_submit($form, &$form_state){
+  variable_set('islandora_xquery_regenerate_dc', $form_state['values']['configure_regeneration']['regenerate_dc']);
 }
 
 /**

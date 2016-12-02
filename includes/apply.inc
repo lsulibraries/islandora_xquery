@@ -166,6 +166,11 @@ function islandora_xquery_apply_query_batch_apply_diff($result, &$context) {
   // Exit early if datastream update fails.
   try {
     $datastream->setContentFromString($new);
+
+    // Update DC as well, if configured.
+    if(variable_get('islandora_xquery_regenerate_dc', FALSE)){
+        updateDcDatastream($object, $datastream);
+    }
     if (module_exists('islandora_object_lock')) {
       module_load_include('inc', 'islandora_object_lock', 'includes/utilities');
       islandora_object_lock_remove_object_lock($result->pid);
@@ -224,4 +229,37 @@ function islandora_xquery_apply_query_batch_finished($success, $results, $operat
   }
   // Delete all appropriate db records and redirect.
   islandora_xquery_cancel_results($results['batch_id']);
+}
+
+/**
+ * Saves a new version of the DC datastream when the MODS datastream is updated.
+ *
+ * Signature follows hook_datastream_updated.
+ *
+ * @param AbstractObject $object
+ * @param AbstractDatastream $datastream
+ */
+function updateDcDatastream(AbstractObject $object, AbstractDatastream $datastream) {
+    if($datastream->id !== 'MODS' || $_POST['form_id'] == "xml_form_builder_datastream_form"){
+        return;
+    }
+    $mods_content = $object['MODS']->content;
+
+    if ($mods_content) {
+
+        // borrowed from islandora_scan_batch
+        $modsToDcTransform = drupal_get_path('module', 'islandora_batch') . '/transforms/mods_to_dc.xsl';
+
+        $xsl = new DOMDocument();
+        $xsl->load($modsToDcTransform);
+
+        $input = new DOMDocument();
+        $input->loadXML($mods_content);
+
+        $processor = new XSLTProcessor();
+        $processor->importStylesheet($xsl);
+
+        $new_dc = $processor->transformToXML($input);
+        $object['DC']->setContentFromString($new_dc);
+    }
 }

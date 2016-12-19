@@ -12,6 +12,7 @@
       <li class="islandora-xquery-preview-control-li"><?php print islandora_xquery_get_cancel_link($batch_id); ?></li>
     </ul>
   </div>
+  <div><strong>Item Count: <?php print $count; ?></strong></div>
   <div class="islandora-xquery-diffs">
     <?php foreach($results as $result): ?>
       <div class="islandora-xquery-diff">

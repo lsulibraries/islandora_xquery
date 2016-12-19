@@ -22,5 +22,10 @@ function islandora_xquery_preview_results($batch_id) {
     ->limit(10)
     ->execute();
 
-  return theme('islandora_xquery_preview', array('results' => $results, 'batch_id' => $batch_id));
+  $count = db_select('islandora_xquery_diffs', 'diffs')
+    ->fields('diffs', array('pid', 'dsid', 'diff'))
+    ->condition('batch_id', $batch_id, '=')
+    ->execute()->rowCount();
+
+  return theme('islandora_xquery_preview', array('results' => $results, 'batch_id' => $batch_id, 'count' => $count));
 }

@@ -90,6 +90,7 @@ function islandora_xquery_theme($existing, $type, $theme, $path) {
     'variables' => array(
       'results' => NULL,
       'batch_id' => "",
+      'count' => 0,
       'apply_link' => "",
       'cancel_link' => "",
     ),

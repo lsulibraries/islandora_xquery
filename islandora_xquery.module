@@ -75,6 +75,15 @@ function islandora_xquery_menu() {
     'page arguments' => array(3),
     'file' => 'includes/cancel.inc',
   );
+  $items['islandora/object/%islandora_object/manage/xquery'] = array(
+    'title' => 'Run XQuery',
+    'description' => 'Run an XQuery against this collection.',
+    'access arguments' => array('search and replace with xquery'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_xquery_collection_form', 2),
+    'file' => 'includes/collection.form.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
   return $items;
 }
 

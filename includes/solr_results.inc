@@ -136,6 +136,7 @@ function islandora_xquery_results_form($form, &$form_state, $object_results, $so
       'submit_all' => array(
         '#type' => 'submit',
         '#value' => t('Run All'),
+        '#access' => FALSE,
       ),
     );
     if (isset($form_state['values']['xquery_controls']['xquery'])) {
